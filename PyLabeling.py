@@ -36,21 +36,20 @@ class Window(Frame):
 
         self.ButtonArr.append(Button(self, text=E1.get()))
         
-        self.ok = Button(self.newWindow, text="Confirm",command = self.AddCategory(), bg='green').pack(side=BOTTOM)
+        self.ok = Button(self.newWindow, text="Confirm",command = self.AddCategory, bg='green').pack(side=BOTTOM)
         
         
     def getColor(self):
         self.color = askcolor()
         self.newWindow.configure(background=self.color[1])
-        print(self.color)
-        
+
     def AddCategory(self):
         
-        
+  
         self.AddButton.grid(column=0, row=len(self.ButtonArr) + 1)
 
         self.ButtonArr[len(self.ButtonArr) - 1].grid(column=0,row=len(self.ButtonArr))
-        
+        print("Clicked")
 root = Tk()
 app = Window(root)
 root.wm_title("Button Test")
