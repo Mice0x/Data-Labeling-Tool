@@ -29,12 +29,12 @@ class Window(Frame):
         self.newWindow.option_add('*Font', '19')
         L1 = Label(self.newWindow, text="Label")
         L1.pack(side=LEFT)
-        E1 = Entry(self.newWindow, bd=5, font=("Arial", 14))
-        E1.pack(side=RIGHT)
+        self.E1 = Entry(self.newWindow, bd=5, font=("Arial", 14))
+        self.E1.pack(side=RIGHT)
         self.ColerChooser = Button(self.newWindow,text="Select Color" ,command=self.getColor).pack(side=TOP)
         
 
-        self.ButtonArr.append(Button(self, text=E1.get()))
+        
         
         self.ok = Button(self.newWindow, text="Confirm",command = self.AddCategory, bg='green').pack(side=BOTTOM)
         
@@ -45,13 +45,14 @@ class Window(Frame):
 
     def AddCategory(self):
         
-  
+        self.ButtonArr.append(Button(self, text=self.E1.get(), bg=self.color[1]))
         self.AddButton.grid(column=0, row=len(self.ButtonArr) + 1)
 
         self.ButtonArr[len(self.ButtonArr) - 1].grid(column=0,row=len(self.ButtonArr))
-        print("Clicked")
+        
 root = Tk()
 app = Window(root)
 root.wm_title("Button Test")
-root.geometry("320x320")
+root.minsize(640, 480)
+root.geometry("640x480")
 root.mainloop()
