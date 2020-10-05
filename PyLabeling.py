@@ -18,14 +18,15 @@ class Window(Frame):
         self.AddButton = Button(self, text="+", command=self.CreateCategory)
         self.AddButton.grid(column=0, row=len(self.ButtonArr))
 
+        
+        self.MenuBar()
+    def MenuBar(self):
         menu = Menu(self.master)
         self.master.config(menu=menu)
         file = Menu(menu)
         file.add_command(label="Open", command=self.open_Image)
         menu.add_cascade(label="File", menu=file)
 
-
-        
     def CreateCategory(self):
         
         if Toplevel.winfo_exists(self.newWindow):
