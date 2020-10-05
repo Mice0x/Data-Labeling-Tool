@@ -18,8 +18,15 @@ class Window(Frame):
         self.AddButton = Button(self, text="+", command=self.CreateCategory)
         self.AddButton.grid(column=0, row=len(self.ButtonArr))
 
-    def CreateCategory(self):
+        menu = Menu(self.master)
+        self.master.config(menu=menu)
+        file = Menu(menu)
+        file.add_command(label="Open", command=self.open_Image)
+        menu.add_cascade(label="File", menu=file)
+
+
         
+    def CreateCategory(self):
         
         if Toplevel.winfo_exists(self.newWindow):
             self.newWindow.destroy()
@@ -32,9 +39,6 @@ class Window(Frame):
         self.E1 = Entry(self.newWindow, bd=5, font=("Arial", 14))
         self.E1.pack(side=RIGHT)
         self.ColerChooser = Button(self.newWindow,text="Select Color" ,command=self.getColor).pack(side=TOP)
-        
-
-        
         
         self.ok = Button(self.newWindow, text="Confirm",command = self.AddCategory, bg='green').pack(side=BOTTOM)
         
@@ -49,6 +53,8 @@ class Window(Frame):
         self.AddButton.grid(column=0, row=len(self.ButtonArr) + 1)
 
         self.ButtonArr[len(self.ButtonArr) - 1].grid(column=0,row=len(self.ButtonArr))
+    def open_Image(self):
+        pass
         
 root = Tk()
 app = Window(root)
