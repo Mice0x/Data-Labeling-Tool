@@ -7,7 +7,7 @@ class Window(Frame):
         self.color = '#d9d9d9'
         self.master = master
         self.option_add('*Font', '19')
-        self.pack(fill=BOTH, expand=4)
+        self.pack(fill=BOTH, expand=1)
 
         #declaring the Top Level Window
         self.newWindow = Toplevel()
