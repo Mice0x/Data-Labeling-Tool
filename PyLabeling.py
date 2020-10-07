@@ -1,26 +1,32 @@
 from tkinter import *
 from tkinter.colorchooser import *
-
+from PIL import ImageTk,Image  
+import PIL
 class Window(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.color = '#d9d9d9'
         self.master = master
         self.option_add('*Font', '19')
-        self.pack(fill=BOTH, expand=4)
+        self.pack(fill=BOTH, expand=1)
 
-        #declaring the Top Level Window
+        # declaring the Top Level Window
         self.newWindow = Toplevel()
         self.newWindow.destroy()
-        
-        self.ButtonArr = []
 
+        self.ButtonArr = []    
+        
         self.AddButton = Button(self, text="+", command=self.CreateCategory)
         self.AddButton.grid(column=0, row=len(self.ButtonArr))
 
-        
         self.MenuBar()
+
+        self.bind('<Motion>', self.motion)
+        self.bind("<ButtonPress-1>", lambda event: self.capture(True))
+        self.bind("<ButtonRelease-1>", lambda event: self.capture(False))
+        self.click = False
     def MenuBar(self):
+        """Creates A Menu Button on the Menu Bar"""
         menu = Menu(self.master)
         self.master.config(menu=menu)
         file = Menu(menu)
@@ -28,7 +34,7 @@ class Window(Frame):
         menu.add_cascade(label="File", menu=file)
 
     def CreateCategory(self):
-        
+        """Opens A Window to create a New Category"""
         if Toplevel.winfo_exists(self.newWindow):
             self.newWindow.destroy()
         self.newWindow = Toplevel(self)
@@ -39,27 +45,52 @@ class Window(Frame):
         L1.pack(side=LEFT)
         self.E1 = Entry(self.newWindow, bd=5, font=("Arial", 14))
         self.E1.pack(side=RIGHT)
-        self.ColerChooser = Button(self.newWindow,text="Select Color" ,command=self.getColor).pack(side=TOP)
-        
-        self.ok = Button(self.newWindow, text="Confirm",command = self.AddCategory, bg='green').pack(side=BOTTOM)
-        
-        
+        self.ColerChooser = Button(
+            self.newWindow, text="Select Color", command=self.getColor).pack(side=TOP)
+
+        self.ok = Button(self.newWindow, text="Confirm",
+                         command=self.AddCategory, bg='green').pack(side=BOTTOM)
+
     def getColor(self):
+        """Asks the color for the category Button"""
         self.color = askcolor()
         self.newWindow.configure(background=self.color[1])
 
     def AddCategory(self):
-        
-        self.ButtonArr.append(Button(self, text=self.E1.get(), bg=self.color[1]))
+        """Adds A new Button to select a category"""
+        self.ButtonArr.append(
+            Button(self, text=self.E1.get(), bg=self.color[1]))
         self.AddButton.grid(column=0, row=len(self.ButtonArr) + 1)
 
-        self.ButtonArr[len(self.ButtonArr) - 1].grid(column=0,row=len(self.ButtonArr))
+        self.ButtonArr[len(self.ButtonArr) - 1].grid(column=0,
+                                                     row=len(self.ButtonArr))
+
     def open_Image(self):
-        pass
+        """Selecting the path where the Images are Located"""
+        load = Image.open("B.jpeg")
+        maxsize = (1500, 1028)
+        tn_image = load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
+        render = ImageTk.PhotoImage(load)
+
+        img = Label(self, image=render)
+        img.image = render
         
+        img.grid(rowspan=28, row=0, column = 2)
+        #print(img.winfo_rootx(), img.winfo_rooty())
+    
+    def capture(self, click):
+        """Captures mouse click"""
+        self.click = click
+    def motion(self, event):
+        """Captures motion when mouse is clicked"""
+        if self.click:
+            x, y = event.x, event.y
+            #print('x={}, y={}'.format(x, y))
+
+    
 root = Tk()
 app = Window(root)
-root.wm_title("Button Test")
+root.wm_title("DL Tool")
 root.minsize(640, 480)
 root.geometry("640x480")
 root.mainloop()
