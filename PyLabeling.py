@@ -1,7 +1,9 @@
 from tkinter import *
 from tkinter.colorchooser import *
-from PIL import ImageTk,Image  
+from PIL import ImageTk, Image
 import PIL
+
+
 class Window(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
@@ -14,8 +16,8 @@ class Window(Frame):
         self.newWindow = Toplevel()
         self.newWindow.destroy()
 
-        self.ButtonArr = []    
-        
+        self.ButtonArr = []
+
         self.AddButton = Button(self, text="+", command=self.CreateCategory)
         self.AddButton.grid(column=0, row=len(self.ButtonArr))
 
@@ -25,6 +27,9 @@ class Window(Frame):
         self.bind("<ButtonPress-1>", lambda event: self.capture(True))
         self.bind("<ButtonRelease-1>", lambda event: self.capture(False))
         self.click = False
+
+        self.startPoint = NONE
+        self.endPoint = None
     def MenuBar(self):
         """Creates A Menu Button on the Menu Bar"""
         menu = Menu(self.master)
@@ -74,20 +79,38 @@ class Window(Frame):
 
         img = Label(self, image=render)
         img.image = render
-        
-        img.grid(rowspan=28, row=0, column = 2)
+
+        img.grid(rowspan=28, row=0, column=2)
         #print(img.winfo_rootx(), img.winfo_rooty())
-    
+
     def capture(self, click):
         """Captures mouse click"""
         self.click = click
+
     def motion(self, event):
         """Captures motion when mouse is clicked"""
-        if self.click:
-            x, y = event.x, event.y
-            #print('x={}, y={}'.format(x, y))
-
-    
+        self.x = 0
+        self.y = 0
+        
+      
+        self.x, self.y = int(event.x), int(event.y)
+            #print('x={}, y={}'.format(self.x, self.y))
+        
+        if self.click == True and self.startPoint == None:
+            self.startPoint = (self.x, self.y)
+        elif self.click == False and self.startPoint != None:
+            self.endPoint = (self.x, self.y)
+            #self.draw_rect()
+            print(self.startPoint, self.endPoint)
+            self.startPoint = None
+            
+    def draw_rect(self):
+        pass
+        #canvas = Canvas(width=abs(self.startPoint[0]- self.endPoint[0]), height=abs(self.startPoint[1]- self.endPoint[1]), bg='white')
+        #canvas.place(x=self.startPoint[0], y=self.startPoint[1])                
+     
+        #canvas.create_rectangle(self.startPoint[0], self.startPoint[1], self.endPoint[0], self.endPoint[1], width=5, fill='red')
+            
 root = Tk()
 app = Window(root)
 root.wm_title("DL Tool")
