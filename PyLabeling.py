@@ -2,13 +2,19 @@ from tkinter import *
 from tkinter.colorchooser import *
 from PIL import ImageTk, Image
 import PIL
-
-
-class Window(Frame):
+from tkinter import filedialog
+import os
+class CreateCategoryWindow(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
-        self.color = '#d9d9d9'
         self.master = master
+class MainWindow(Frame):
+    def __init__(self, master=None):
+        Frame.__init__(self, master)
+        self.master = master
+        
+        self.color = '#d9d9d9'
+        
         self.option_add('*Font', '19')
         self.pack(fill=BOTH, expand=1)
 
@@ -30,6 +36,9 @@ class Window(Frame):
 
         self.startPoint = NONE
         self.endPoint = None
+
+        self.directory = ""
+        self.current_image_index = 0
     def MenuBar(self):
         """Creates A Menu Button on the Menu Bar"""
         menu = Menu(self.master)
@@ -72,17 +81,28 @@ class Window(Frame):
 
     def open_Image(self):
         """Selecting the path where the Images are Located"""
-        load = Image.open("B.jpeg")
+        if self.directory == "":
+            self.directory = filedialog.askdirectory(initialdir = '/', title = "Select directory")
+            self.files_in_directory = os.listdir(self.directory)
+        
+        load = Image.open(self.directory + '/' + self.files_in_directory[self.current_image_index])
         maxsize = (1500, 1028)
-        tn_image = load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
+        load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
         render = ImageTk.PhotoImage(load)
 
         img = Label(self, image=render)
         img.image = render
 
-        img.grid(rowspan=28, row=0, column=2)
-        #print(img.winfo_rootx(), img.winfo_rooty())
-
+        img.grid(rowspan=28, row=0, column=1)
+        print(img.winfo_rootx(), img.winfo_rooty())
+        
+        
+        self.NextItem = Button(self, text=">", command=self.NextImage)
+        self.NextItem.grid(sticky=S, column=1)
+        
+    def NextImage(self):
+        self.current_image_index += 1
+        self.open_Image()
     def capture(self, click):
         """Captures mouse click"""
         self.click = click
@@ -110,9 +130,10 @@ class Window(Frame):
         #canvas.place(x=self.startPoint[0], y=self.startPoint[1])                
      
         #canvas.create_rectangle(self.startPoint[0], self.startPoint[1], self.endPoint[0], self.endPoint[1], width=5, fill='red')
-            
+    def get_file_in_directroy(self):
+        pass 
 root = Tk()
-app = Window(root)
+app = MainWindow(root)
 root.wm_title("DL Tool")
 root.minsize(640, 480)
 root.geometry("640x480")
