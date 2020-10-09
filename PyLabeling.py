@@ -4,17 +4,16 @@ from PIL import ImageTk, Image
 import PIL
 from tkinter import filedialog
 import os
-class CreateCategoryWindow(Frame):
-    def __init__(self, master=None):
-        Frame.__init__(self, master)
-        self.master = master
+
+
 class MainWindow(Frame):
     def __init__(self, master=None):
         Frame.__init__(self, master)
+
         self.master = master
-        
+
         self.color = '#d9d9d9'
-        
+
         self.option_add('*Font', '19')
         self.pack(fill=BOTH, expand=1)
 
@@ -39,6 +38,8 @@ class MainWindow(Frame):
 
         self.directory = ""
         self.current_image_index = 0
+        #self.img = Label()
+
     def MenuBar(self):
         """Creates A Menu Button on the Menu Bar"""
         menu = Menu(self.master)
@@ -81,28 +82,51 @@ class MainWindow(Frame):
 
     def open_Image(self):
         """Selecting the path where the Images are Located"""
-        if self.directory == "":
-            self.directory = filedialog.askdirectory(initialdir = '/', title = "Select directory")
-            self.files_in_directory = os.listdir(self.directory)
-        
-        load = Image.open(self.directory + '/' + self.files_in_directory[self.current_image_index])
+
+        self.directory = filedialog.askdirectory(
+            initialdir='/', title="Select directory")
+        self.files_in_directory = os.listdir(self.directory)
+
+        load = Image.open(self.directory + '/' +
+                          self.files_in_directory[self.current_image_index])
         maxsize = (1500, 1028)
         load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
         render = ImageTk.PhotoImage(load)
 
-        img = Label(self, image=render)
-        img.image = render
+        self.img = Label(self, image=render)
+        self.img.image = render
 
-        img.grid(rowspan=28, row=0, column=1)
-        print(img.winfo_rootx(), img.winfo_rooty())
+        self.img.grid(rowspan=28, row=0, column=1, columnspan=27)
+        print(self.img.winfo_rootx(), self.img.winfo_rooty())
+
+        self.previusItem = Button(self, text="<", command=self.previus_Image)
+        self.previusItem.grid(column = 13, row = 29)
+
+        self.NextItem = Button(self, text=">", command=self.next_Image)
+        self.NextItem.grid(column = 14, row = 29)
         
+
+    def change_Image(self):
         
-        self.NextItem = Button(self, text=">", command=self.NextImage)
-        self.NextItem.grid(sticky=S, column=1)
-        
-    def NextImage(self):
-        self.current_image_index += 1
-        self.open_Image()
+        self.img.grid_forget()
+        load = Image.open(self.directory + '/' +
+                          self.files_in_directory[self.current_image_index])
+        maxsize = (1500, 1028)
+        load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
+        render = ImageTk.PhotoImage(load)
+
+        self.img = Label(self, image=render)
+        self.img.image = render
+
+        self.img.grid(rowspan=28, row=0, column=1)
+    def previus_Image(self):
+        if self.current_image_index != 0:
+            self.current_image_index -= 1
+            self.change_Image()
+    def next_Image(self):
+        if self.current_image_index < len(self.files_in_directory):
+            self.current_image_index += 1
+            self.change_Image()
     def capture(self, click):
         """Captures mouse click"""
         self.click = click
@@ -111,27 +135,28 @@ class MainWindow(Frame):
         """Captures motion when mouse is clicked"""
         self.x = 0
         self.y = 0
-        
-      
+
         self.x, self.y = int(event.x), int(event.y)
-            #print('x={}, y={}'.format(self.x, self.y))
-        
+        #print('x={}, y={}'.format(self.x, self.y))
+
         if self.click == True and self.startPoint == None:
             self.startPoint = (self.x, self.y)
         elif self.click == False and self.startPoint != None:
             self.endPoint = (self.x, self.y)
-            #self.draw_rect()
+            # self.draw_rect()
             print(self.startPoint, self.endPoint)
             self.startPoint = None
-            
+
     def draw_rect(self):
         pass
         #canvas = Canvas(width=abs(self.startPoint[0]- self.endPoint[0]), height=abs(self.startPoint[1]- self.endPoint[1]), bg='white')
-        #canvas.place(x=self.startPoint[0], y=self.startPoint[1])                
-     
+        #canvas.place(x=self.startPoint[0], y=self.startPoint[1])
+
         #canvas.create_rectangle(self.startPoint[0], self.startPoint[1], self.endPoint[0], self.endPoint[1], width=5, fill='red')
     def get_file_in_directroy(self):
-        pass 
+        pass
+
+
 root = Tk()
 app = MainWindow(root)
 root.wm_title("DL Tool")
