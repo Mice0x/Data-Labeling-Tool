@@ -86,17 +86,19 @@ class MainWindow(Frame):
         self.directory = filedialog.askdirectory(
             initialdir='/', title="Select directory")
         self.files_in_directory = os.listdir(self.directory)
+        try:
+            load = Image.open(self.directory + '/' +
+                            self.files_in_directory[self.current_image_index])
+            maxsize = (1800, 1028)
+            load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
+            render = ImageTk.PhotoImage(load)
 
-        load = Image.open(self.directory + '/' +
-                          self.files_in_directory[self.current_image_index])
-        maxsize = (1500, 1028)
-        load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
-        render = ImageTk.PhotoImage(load)
+            self.img = Label(self, image=render)
+            self.img.image = render
 
-        self.img = Label(self, image=render)
-        self.img.image = render
-
-        self.img.grid(rowspan=28, row=0, column=1, columnspan=27)
+            self.img.grid(rowspan=28, row=0, column=1, columnspan=27)
+        except:
+            pass
         print(self.img.winfo_rootx(), self.img.winfo_rooty())
 
         self.previusItem = Button(self, text="<", command=self.previus_Image)
@@ -107,18 +109,20 @@ class MainWindow(Frame):
         
 
     def change_Image(self):
-        
-        self.img.grid_forget()
-        load = Image.open(self.directory + '/' +
-                          self.files_in_directory[self.current_image_index])
-        maxsize = (1500, 1028)
-        load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
-        render = ImageTk.PhotoImage(load)
+        try:
+            self.img.grid_forget()
+            load = Image.open(self.directory + '/' +
+                            self.files_in_directory[self.current_image_index])
+            maxsize = (1500, 1028)
+            load.thumbnail(maxsize, PIL.Image.ANTIALIAS)
+            render = ImageTk.PhotoImage(load)
 
-        self.img = Label(self, image=render)
-        self.img.image = render
+            self.img = Label(self, image=render)
+            self.img.image = render
 
-        self.img.grid(rowspan=28, row=0, column=1)
+            self.img.grid(rowspan=28, row=0, column=1)
+        except:
+            pass
     def previus_Image(self):
         if self.current_image_index != 0:
             self.current_image_index -= 1
@@ -143,7 +147,7 @@ class MainWindow(Frame):
             self.startPoint = (self.x, self.y)
         elif self.click == False and self.startPoint != None:
             self.endPoint = (self.x, self.y)
-            # self.draw_rect()
+            self.draw_rect()
             print(self.startPoint, self.endPoint)
             self.startPoint = None
 
@@ -156,7 +160,7 @@ class MainWindow(Frame):
     def get_file_in_directroy(self):
         pass
 
-
+    
 root = Tk()
 app = MainWindow(root)
 root.wm_title("DL Tool")
